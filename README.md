@@ -1,7 +1,6 @@
 # CogniTriage ⚡
 
 [![Repo](https://img.shields.io/badge/repo-roboticspro1/DeepLearningWeek--ByteMe-blue)](https://github.com/roboticspro1/DeepLearningWeek-ByteMe)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 **Moving from passive analytics to active intervention.**
 
