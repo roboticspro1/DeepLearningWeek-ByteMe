@@ -1,0 +1,18 @@
+student_id,question_id,topic,subtopic,difficulty,correct,time_taken,timestamp
+1,101,Thermodynamics,Heat Transfer,Medium,0,130,2026-02-28 09:00:00
+1,102,Thermodynamics,Heat Transfer,Medium,1,110,2026-02-28 09:15:00
+1,103,Thermodynamics,Entropy,Hard,0,180,2026-02-28 09:30:00
+1,104,Thermodynamics,Entropy,Hard,0,175,2026-02-28 09:45:00
+1,105,Thermodynamics,Heat Transfer,Easy,1,45,2026-03-01 10:00:00
+1,106,Thermodynamics,Entropy,Medium,1,90,2026-03-01 10:15:00
+1,201,Circuit Engineering,KVL,Medium,1,40,2026-02-27 14:00:00
+1,202,Circuit Engineering,KCL,Medium,0,15,2026-02-27 14:05:00
+1,203,Circuit Engineering,KCL,Easy,0,12,2026-02-27 14:06:00
+1,204,Circuit Engineering,Op-Amps,Hard,0,25,2026-02-27 14:10:00
+1,205,Circuit Engineering,KVL,Medium,0,18,2026-02-27 14:12:00
+1,301,Multivariable Calculus,Partial Derivatives,Hard,1,190,2026-02-25 18:00:00
+1,302,Multivariable Calculus,Integration,Medium,1,210,2026-02-25 18:20:00
+1,303,Multivariable Calculus,Partial Derivatives,Hard,0,205,2026-02-25 18:40:00
+1,401,Logic Translation,Physical to Syntax,Medium,1,35,2026-03-01 11:00:00
+1,402,Logic Translation,Physical to Syntax,Medium,1,40,2026-03-01 11:05:00
+1,403,Logic Translation,Loop Structures,Hard,0,45,2026-03-01 11:10:00
