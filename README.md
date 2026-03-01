@@ -4,148 +4,100 @@
 
 **Moving from passive analytics to active intervention.**
 
-CogniTriage is an AI-powered cognitive triage system that analyzes student learning patterns in real-time and generates personalized micro-interventions to unblock learning friction.
+CogniTriage is an AI-powered topic mastery platform that triages learning friction, highlights high-priority gaps, and generates targeted interventions.
 
-Quick links
-- Repository: https://github.com/roboticspro1/DeepLearningWeek-ByteMe
-- Run (local): `streamlit run app.py`
+## What Changed
 
-Quick note on API keys
-- You can paste your OpenAI API key in the Streamlit sidebar at runtime.
-- Or set the environment variable `OPENAI_API_KEY` before running:
+This project now includes a **full web application** (not Streamlit-first):
 
-```bash
-export OPENAI_API_KEY="sk-..."
-streamlit run app.py
-```
+- Dashboard with urgent-topic triage cards
+- Mastery radar + telemetry charts
+- Targeted remediation (auto-lock on highest urgency topic)
+- Self remediation (choose any topic)
+- AI micro-task generation
+- AI-generated diagnostic quizzes with detailed explanations
 
-Streamlit also supports a `.streamlit/secrets.toml` file with:
-
-```toml
-[openai]
-api_key = "sk-..."
-```
-
-
-## Overview
-
-Instead of overwhelming dashboards full of metrics, CogniTriage shows only what matters: **What is breaking down, why, and exactly how to fix it.**
-
-### Key Features
-
-- **Priority Action Center**: Displays only urgent topics where students are struggling (urgency > 30)
-- **Contradiction-Free Diagnostics**: Intelligent classification of learning issues:
-  - Active Decay (Forgetting) - Used to know it, but recently failed
-  - Careless Errors/Fatigue - Fast but inaccurate responses
-  - Deep Conceptual Gap - Slow and inaccurate
-  - High Cognitive Load - Accurate but too slow
-  - Retained Mastery - Performing well
-- **Cognitive Profile Radar**: Visual summary of mastery across top 5 topics
-- **AI-Generated Micro-Tasks**: 5-minute targeted interventions powered by GPT-4o-mini
-- **Root Cause Telemetry**: Deep analytics showing trends, decay detection, and performance metrics
+The original Streamlit files (`app.py`, `utils.py`) are still present, but the recommended entry point is now the FastAPI website.
 
 ## Project Structure
 
-```
+```text
 .
-├── app.py              # Streamlit UI and main application logic
-├── utils.py            # Core analysis functions and AI integration
-├── data.csv            # Student performance data (timestamp, topic, correct, time_taken)
-├── requirements.txt    # Python dependencies
-├── lib/                # Frontend libraries
-│   ├── tom-select/     # Dropdown UI component
-│   ├── vis-9.1.2/      # Network visualization library
-│   └── bindings/       # Custom JS bindings
-└── graph.html          # Generated network visualization
+├── webapp/
+│   ├── main.py              # FastAPI app + API routes
+│   ├── analytics.py         # Diagnostic logic and topic telemetry
+│   ├── ai_service.py        # OpenAI micro-task/quiz generation
+│   ├── templates/
+│   │   └── index.html       # Main web UI shell
+│   └── static/
+│       ├── styles.css       # App styling and responsive layout
+│       └── app.js           # Frontend logic (API wiring + quiz flow + charts)
+├── app.py                   # Legacy Streamlit UI
+├── utils.py                 # Legacy Streamlit helpers
+├── data.csv                 # Student performance data
+└── requirements.txt
 ```
 
 ## Getting Started
 
 ### Prerequisites
 
-- Python 3.8+
-- OpenAI API key (for AI-generated micro-tasks)
+- Python 3.9+
+- OpenAI API key (optional, required only for AI quiz/micro-task generation)
 
-### Installation
+### Install
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/roboticspro1/DeepLearningWeek-ByteMe.git
-   cd DeepLearningWeek-ByteMe
-   ```
+```bash
+pip install -r requirements.txt
+```
 
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+### Run Website
 
-3. Run the application:
-   ```bash
-   streamlit run app.py
-   ```
+```bash
+uvicorn webapp.main:app --reload
+```
 
-4. Open your browser to `http://localhost:8501`
+Open: [http://localhost:8000](http://localhost:8000)
 
-## Usage
+## Using OpenAI
 
-1. **Enter OpenAI API Key**: Paste your API key in the sidebar under "OpenAI API Key (For Unblocker)"
-2. **View Your Triage Queue**: The Priority Action Center displays topics requiring intervention, ordered by urgency
-3. **Generate Micro-Tasks**: Click "⚡ Generate 5-Min Micro-Task" for AI-generated, targeted learning activities
-4. **Analyze Cognitive Profile**: View your mastery radar and deep telemetry in the tabs below
+You can either:
+
+- Paste API key in the website sidebar at runtime, or
+- Set environment variable before launch:
+
+```bash
+export OPENAI_API_KEY="sk-..."
+uvicorn webapp.main:app --reload
+```
 
 ## Data Format
 
-The `data.csv` file should contain the following columns:
+`data.csv` needs these columns:
 
-| Column | Description |
-|--------|-------------|
-| `timestamp` | When the activity occurred (ISO format) |
-| `topic` | Topic being studied |
-| `correct` | 1 if answer was correct, 0 if incorrect |
-| `time_taken` | Time taken to answer (seconds) |
-
-### Example:
-```csv
-timestamp,topic,correct,time_taken
-2024-01-15T10:30:00,Calculus,1,45
-2024-01-15T10:35:00,Calculus,0,120
-2024-01-15T11:00:00,Linear Algebra,1,30
-```
+- `timestamp` (ISO datetime)
+- `topic` (string)
+- `correct` (0 or 1)
+- `time_taken` (seconds)
 
 ## Diagnostic Logic
 
-The system uses contradiction-free logic to diagnose learning issues:
-
 ```python
-1. Active Decay: past_accuracy - recent_accuracy > 20% → Urgency: 95 🔴
-2. Careless/Fatigue: accuracy < 50% AND time < 40s → Urgency: 80 🟠
-3. Deep Gap: accuracy < 50% AND time ≥ 40s → Urgency: 90 🔴
-4. High Load: accuracy ≥ 50% AND time > 120s → Urgency: 60 🔵
-5. Retained: Everything else → Urgency: 10 🟢
+1. Active Decay: past_accuracy - recent_accuracy > 20% -> Urgency: 95
+2. Careless/Fatigue: accuracy < 50% and time < 40s -> Urgency: 80
+3. Deep Gap: accuracy < 50% and time >= 40s -> Urgency: 90
+4. High Load: accuracy >= 50% and time > 120s -> Urgency: 60
+5. Retained: otherwise -> Urgency: 10
 ```
 
-## Architecture
+## Tech Stack
 
-- **Frontend**: Streamlit (Python-based reactive UI)
-- **Analytics Engine**: Pandas for data processing and trend detection
-- **AI Backend**: OpenAI GPT-4o-mini for generating micro-tasks
-- **Visualization**: Plotly (radar charts, graphs)
-
-## Technologies Used
-
-- `streamlit` - Interactive web UI
-- `pandas` & `numpy` - Data analysis
-- `openai` - AI-powered interventions
-- `plotly` - Data visualization
-
-## Contributing
-
-This is a ByteMe hackathon project. Contributions welcome!
+- FastAPI + Uvicorn
+- HTML/CSS/Vanilla JS
+- Chart.js
+- Pandas
+- OpenAI API
 
 ## License
 
 MIT
-
----
-
-**Built with ❤️ at Deep Learning NTU Week**
