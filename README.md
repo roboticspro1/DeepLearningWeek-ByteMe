@@ -1,8 +1,32 @@
 # CogniTriage ⚡
 
+[![Repo](https://img.shields.io/badge/repo-roboticspro1/DeepLearningWeek--ByteMe-blue)](https://github.com/roboticspro1/DeepLearningWeek-ByteMe)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+
 **Moving from passive analytics to active intervention.**
 
 CogniTriage is an AI-powered cognitive triage system that analyzes student learning patterns in real-time and generates personalized micro-interventions to unblock learning friction.
+
+Quick links
+- Repository: https://github.com/roboticspro1/DeepLearningWeek-ByteMe
+- Run (local): `streamlit run app.py`
+
+Quick note on API keys
+- You can paste your OpenAI API key in the Streamlit sidebar at runtime.
+- Or set the environment variable `OPENAI_API_KEY` before running:
+
+```bash
+export OPENAI_API_KEY="sk-..."
+streamlit run app.py
+```
+
+Streamlit also supports a `.streamlit/secrets.toml` file with:
+
+```toml
+[openai]
+api_key = "sk-..."
+```
+
 
 ## Overview
 
