@@ -1,5 +1,6 @@
 import pandas as pd
 from openai import OpenAI
+import json
 
 def load_data(filepath="data.csv"):
     df = pd.read_csv(filepath)
@@ -86,3 +87,42 @@ def generate_micro_task(api_key, topic, diagnosis):
         return response.choices[0].message.content
     except Exception as e:
         return "Error reaching AI."
+
+def generate_quiz(api_key, topic, diagnosis="General practice and mastery", num_questions=4):
+    if not api_key:
+        return None
+        
+    prompt = f"""
+    The student is studying '{topic}'. Context/Diagnosis: '{diagnosis}'.
+    Generate a {num_questions}-question multiple-choice diagnostic quiz.
+    
+    CRITICAL: You MUST return ONLY a valid JSON object. Do not use markdown code blocks (no ```json). Just the raw JSON.
+    
+    Format exactly like this:
+    {{
+      "questions": [
+        {{
+          "question": "...",
+          "options": ["A) ...", "B) ...", "C) ...", "D) ..."],
+          "correct_answer": "B) ...",
+          "detailed_explanation": "Provide a highly detailed explanation. Explain exactly WHY the correct answer is right, and specifically point out the common misconceptions that lead to the wrong options. Use tangible analogies if helpful."
+        }}
+      ]
+    }}
+    """
+    try:
+        client = OpenAI(api_key=api_key)
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.7
+        )
+        raw_text = response.choices[0].message.content.strip()
+        if raw_text.startswith("```json"):
+            raw_text = raw_text[7:-3]
+        elif raw_text.startswith("```"):
+            raw_text = raw_text[3:-3]
+        return json.loads(raw_text)
+    except Exception as e:
+        print(f"Error: {e}")
+        return None

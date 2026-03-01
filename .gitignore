@@ -1,0 +1,31 @@
+.streamlit/secrets.toml
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Editor directories and files
+.DS_Store
+.vscode/
+.idea/
+
+# Environment files
+.env
+
+# Byte-compiled / optimized / DLL files
+*.so
+*.dylib
+
+# Distribution / packaging
+build/
+dist/
+.egg-info/
+
+# Streamlit
+.streamlit/
